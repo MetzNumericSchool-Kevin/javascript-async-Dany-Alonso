@@ -66,12 +66,33 @@ let nomEpoqueActuelle;
 
 creerLesChoixEpoque(epoques);
 
-// Fonction appelée plus haut quand le formulaire de voyage temporel est soumis
-// et qu'une époque de destination du voyage temporel a été choisi
+const hideEpoque = document.querySelector(".localisation_epoque");
+const loader = document.querySelector(".voyage_en_cours");
+
+/**
+ * Exercice 1 - Le Téléporteur Temporel
+ */
+function whenTravelFinish() {
+  loader.style.display = "none";
+  hideEpoque.textContent = nomEpoqueActuelle;
+}
+
+function voyagezTemps(nomEpoque, whenTravelFinish) {
+  setTimeout(whenTravelFinish, generationNombreAleatoireEntre(1000, 3000));
+}
+
 function quandEpoqueChoisie(nomEpoque) {
   nomEpoqueActuelle = nomEpoque;
-  // Utilisation de votre fonction voyagerTemps
+
+  hideEpoque.textContent = "";
+  loader.style.display = "block";
+
+  voyagezTemps(nomEpoque, whenTravelFinish);
 }
+
+// Fonction appelée plus haut quand le formulaire de voyage temporel est soumis
+// et qu'une époque de destination du voyage temporel a été choisi
+// document.querySelector(".voyage_en_cours").style.display = "block";
 
 // Fonction appelée plus haut quand le formulaire de recherche d'artefact est soumis
 function quandRechercheArtefact(artefact) {
