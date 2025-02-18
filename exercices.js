@@ -11,12 +11,6 @@ const formRechercheArtefact = document.querySelector(
   ".form__recherche_artefact"
 );
 
-const epoques = {
-  romaine: "Romaine",
-  medievale: "Médievale",
-  jurassique: "Jurassique",
-};
-
 const creerLesChoixEpoque = (epoques) => {
   const selectHtml = formChoixEpoqueHtml.querySelector("select");
   Object.entries(epoques).forEach(([id_epoque, nom_epoque]) => {
@@ -31,10 +25,20 @@ function generationNombreAleatoireEntre(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+// Permet d'afficher l'époque de destination du voyage
 const afficherDestination = (nomEpoque) =>
   (localisationEpoqueHTML.textContent = nomEpoque);
 
+// Permet d'afficher un artefact trouvée, ou non, à une époque
+const afficherRechercheArtefact = ({ artefact, epoque, success = true }) => {
+  const li = document.createElement("li");
+  li.textContent = `${success ? "✅" : "❌"} ${artefact} (Epoque ${epoque})`;
+  listeArtefactHTML.appendChild(li);
+};
+
 // Execution
+
+// Gestion envoi formulaire choix époque
 formChoixEpoqueHtml.addEventListener("submit", (event) => {
   event.preventDefault();
   const epoque = new FormData(formChoixEpoqueHtml).get("epoque");
@@ -47,54 +51,83 @@ formChoixEpoqueHtml.addEventListener("submit", (event) => {
   quandEpoqueChoisie(epoque);
 });
 
+// Gestion envoi formulaire recherche artelefact
 formRechercheArtefact.addEventListener("submit", (event) => {
   event.preventDefault();
   const artefact = new FormData(formRechercheArtefact).get("artefact");
   quandRechercheArtefact(artefact);
 });
 
-const afficherRechercheArtefact = ({ artefact, epoque, success = true }) => {
-  const li = document.createElement("li");
-  li.textContent = `${success ? "✅" : "❌"} ${artefact} (Epoque ${epoque})`;
-  listeArtefactHTML.appendChild(li);
-};
-
 /**
  * Votre partie commence ici, la partie modifiable par vos soins
  */
+
+function main() {
+  // Sera modifié par le dernier exercice
+  const epoques = {
+    romaine: "Romaine",
+    medievale: "Médievale",
+    jurassique: "Jurassique",
+  };
+
+  // Création dynamique des époques de destination de la machine temporelle
+  creerLesChoixEpoque(epoques);
+}
+
+main();
+
+// Permet d'être réutilisé dans la fonction quandRechercheArtefact
 let nomEpoqueActuelle;
 
 creerLesChoixEpoque(epoques);
+
+/**
+ * Exercice 1 - Le Téléporteur Temporel
+ */
 
 const hideEpoque = document.querySelector(".localisation_epoque");
 const loader = document.querySelector(".voyage_en_cours");
 
 /**
- * Exercice 1 - Le Téléporteur Temporel
+ * Fonction permettant de cacher le document html avec la class "voyage_en_cours" * puis d'afficher le document html avec la class "localisation_epoque" et lui
+ * donné comme valeur la constante nomEpoqueActuelle.
  */
 function whenTravelFinish() {
+  // Cache le document html avec la class "voyage_en_cours".
   loader.style.display = "none";
+  // Affiche le document html avec la class "localisation_epoque".
+  hideEpoque.style.display = "block";
+  // Ecrit la valeur qui a dans la constante "nomEpoqueActuelle" dans le document html avec la class "localisation_epoque".
   hideEpoque.textContent = nomEpoqueActuelle;
 }
-
+/**
+ * @param {String} nomEpoque - Reprend le nom d'époque du select du formulaire.
+ * @param {Function} whenTravelFinish - Fonction callback une fois le voyage
+ * terminé.
+ */
 function voyagezTemps(nomEpoque, whenTravelFinish) {
+  // Execute la fonction "whenTravelFinish" au bout d'un timer aléatoire (entre 1000 et 3000ms).
   setTimeout(whenTravelFinish, generationNombreAleatoireEntre(1000, 3000));
 }
 
+/**
+ * Gère l'affichage lors de la sélection d'une époque.
+ * @param {string} nomEpoque - Reprend le nom d'époque du select du formulaire.
+ */
 function quandEpoqueChoisie(nomEpoque) {
   nomEpoqueActuelle = nomEpoque;
-
-  hideEpoque.textContent = "";
+  // Cache le document html avec la class "localisation_epoque".
+  hideEpoque.style.display = "none";
+  // Affiche le document html avec la class "voyage_en_cours".
   loader.style.display = "block";
 
+  // Execute la fonction voyagezTemps.
   voyagezTemps(nomEpoque, whenTravelFinish);
 }
 
-// Fonction appelée plus haut quand le formulaire de voyage temporel est soumis
-// et qu'une époque de destination du voyage temporel a été choisi
-// document.querySelector(".voyage_en_cours").style.display = "block";
-
-// Fonction appelée plus haut quand le formulaire de recherche d'artefact est soumis
+// Fonction appelée plus haut quand le formulaire de recherche d'artefact est envoyé
+// Faites le test depuis la page HTML
 function quandRechercheArtefact(artefact) {
+  console.log(artefact);
   // Utilisation de votre fonction collecterArtefact
 }
