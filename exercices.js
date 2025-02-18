@@ -79,14 +79,12 @@ main();
 // Permet d'être réutilisé dans la fonction quandRechercheArtefact
 let nomEpoqueActuelle;
 
-creerLesChoixEpoque(epoques);
-
 /**
  * Exercice 1 - Le Téléporteur Temporel
  */
 
 const hideEpoque = document.querySelector(".localisation_epoque");
-const loader = document.querySelector(".voyage_en_cours");
+const loaderTravel = document.querySelector(".voyage_en_cours");
 
 /**
  * Fonction permettant de cacher le document html avec la class "voyage_en_cours" * puis d'afficher le document html avec la class "localisation_epoque" et lui
@@ -94,7 +92,7 @@ const loader = document.querySelector(".voyage_en_cours");
  */
 function whenTravelFinish() {
   // Cache le document html avec la class "voyage_en_cours".
-  loader.style.display = "none";
+  loaderTravel.style.display = "none";
   // Affiche le document html avec la class "localisation_epoque".
   hideEpoque.style.display = "block";
   // Ecrit la valeur qui a dans la constante "nomEpoqueActuelle" dans le document html avec la class "localisation_epoque".
@@ -102,12 +100,14 @@ function whenTravelFinish() {
 }
 /**
  * @param {String} nomEpoque - Reprend le nom d'époque du select du formulaire.
- * @param {Function} whenTravelFinish - Fonction callback une fois le voyage
+ * @param {Function} callback - Fonction callback une fois le voyage
  * terminé.
  */
-function voyagezTemps(nomEpoque, whenTravelFinish) {
+function voyagezTemps(nomEpoque, callback) {
   // Execute la fonction "whenTravelFinish" au bout d'un timer aléatoire (entre 1000 et 3000ms).
-  setTimeout(whenTravelFinish, generationNombreAleatoireEntre(1000, 3000));
+  setTimeout(function () {
+    callback(nomEpoque);
+  }, generationNombreAleatoireEntre(1000, 3000));
 }
 
 /**
@@ -119,15 +119,37 @@ function quandEpoqueChoisie(nomEpoque) {
   // Cache le document html avec la class "localisation_epoque".
   hideEpoque.style.display = "none";
   // Affiche le document html avec la class "voyage_en_cours".
-  loader.style.display = "block";
+  loaderTravel.style.display = "block";
 
   // Execute la fonction voyagezTemps.
   voyagezTemps(nomEpoque, whenTravelFinish);
 }
 
+/**
+ * Exercice 2 - La Collecte d'Artefact Mystère
+ */
+const searchArtefact = document.querySelector(".recherche_en_cours");
+
+function recolteArtefact(success, artefact) {
+  afficherRechercheArtefact({
+    artefact,
+    epoque: nomEpoqueActuelle,
+    success,
+  });
+
+  searchArtefact.style.display = "none";
+}
+
+function collecterArtefact(nomArtefact, callback) {
+  console.log("Je suis en train de collecter");
+  const collecte_reussie = Math.random() * 100 >= 50;
+  setTimeout(function () {
+    callback(collecte_reussie, nomArtefact);
+  }, generationNombreAleatoireEntre(1000, 3000));
+}
+
 // Fonction appelée plus haut quand le formulaire de recherche d'artefact est envoyé
-// Faites le test depuis la page HTML
-function quandRechercheArtefact(artefact) {
-  console.log(artefact);
-  // Utilisation de votre fonction collecterArtefact
+function quandRechercheArtefact(nomArtefact) {
+  searchArtefact.style.display = "block";
+  collecterArtefact(nomArtefact, recolteArtefact);
 }
